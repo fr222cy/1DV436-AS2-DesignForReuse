@@ -21,18 +21,25 @@ class Read
         {
             if($_POST["searchID"] == $folderName)
             {
-               $folder = scandir($this->main_path.$folderName);
-               
-               foreach ($folder as $value) 
-               {
-                   echo $value;
-               }
-               
                return true; 
             }
         }
         
         return false;
+    }
+    
+    public function getFolderContent($collectionID)
+    {
+        $folder = scandir($this->main_path.$collectionID);
+        $contentArray = array();
+         
+         
+        foreach($folder as $item)    
+        {
+           array_push($contentArray, $item);
+        }
+        
+        return $contentArray;
     }
     
 }

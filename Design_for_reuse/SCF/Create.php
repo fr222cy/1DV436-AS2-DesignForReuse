@@ -10,7 +10,6 @@ class Create
     
     public function collection($collectionID)
     {
-        //TODO: CHECK IF COLLECTIONID EXISTS
         $pathName = $this->main_path.$collectionID;
         // Make Directory | 0777 by default, which means the widest possible access.
         mkdir($pathName,0777);
@@ -19,7 +18,7 @@ class Create
     public function artifact($collectionID)
     {
         $target_dir = $this->main_path.$collectionID;
-        echo $target_dir;
+       
         $target_file = $target_dir ."/". basename($_FILES["fileToUpload"]["name"]);
         echo $target_file;
         

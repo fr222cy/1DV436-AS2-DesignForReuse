@@ -7,6 +7,7 @@ class SCF
 {
     private $create;
     private $read;
+    private $searchInfo;
     //private $update;
     //private $remove;
     
@@ -15,12 +16,14 @@ class SCF
         $main_path = "collections/";
         $this->create = new Create($main_path); 
         $this->read = new Read($main_path); 
+        $this->searchInfo = [];
         //$this->update = new Update(); 
         //$this->remove = new Delete(); 
+        
     }
     // ADD needs to recieve an object.
     
-    public function addFolder()
+    private function addFolder()
     {
         //Else there is a folder.
         if(isset($_POST['createFolder']))
@@ -50,23 +53,27 @@ class SCF
         }
     }
     
-    public function addFile()
+    private function addFile($collectionID)
     {
+        
         //If there is a file to upload
         if(isset($_POST['fileToUpload']))
         {
-          $this->create->artifact(7028);
+          
+          $this->create->artifact($collectionID);
           echo "File Uploaded";
         }
+     
     }
     
-    public function searchCollection()
+    private function searchCollection()
     {
         if(isset($_POST['searchCollection']))
         {
             if($this->read->isMatch())
             {
-                echo "Success!";
+                $this->searchInfo = ["isMatch" => true, "searchID" => $_POST['searchID']];
+               
             }
             else
             {
@@ -75,16 +82,45 @@ class SCF
         }
     }
     
-    
-    
-    
-    
-    public function addFileForm()
+    // Might not use sessions.
+    public function startSession($searchInfo)
     {
-        echo "<form action='".$this->addFile()."' method='post' enctype='multipart/form-data'>
+        $_SESSION['collectionSession'] = $searchInfo;
+    }
+    
+    public function getSearchInfo()
+    {
+        if(isset($_POST['searchCollection']))
+        {
+            return $this->searchInfo; 
+        }
+    }
+    
+    public function getFolderContent($collectionID)
+    {
+        if($this->getSearchInfo()['isMatch'] && $this->getSearchInfo()['searchID'] == $collectionID)
+        {
+            return $this->read->getFolderContent($collectionID);
+        }
+        else
+        {
+            return "Folder is Empty";
+        }
+    }
+    public function addFileForm($collectionID)
+    {
+        if($collectionID != null)
+        {
+            echo "<form action='".$this->addFile($collectionID)."' method='post' enctype='multipart/form-data'>
                 <input type='file' name='fileToUpload' id='fileToUpload'>
                 <input type='submit' value='Upload' name='fileToUpload'>
-            </form>";
+            </form>"; 
+        }
+        else {
+            throw new Exception("addFile needs a collectionID");
+        }
+        
+       
     }
     public function addFolderForm()
     {
@@ -100,14 +136,23 @@ class SCF
             </form>";
     }
     
-    
-    
     public function getFolders()
     { 
         return scandir("collections");
     }
 
+    public function startHTMLRender()
+    {
+        echo "<!DOCTYPE html>
+                <html>
+                    <body>";
+    }
     
+    public function stopHTMLRender()
+    {
+        echo "</body>
+            </html>";
+    }
     
     
     
