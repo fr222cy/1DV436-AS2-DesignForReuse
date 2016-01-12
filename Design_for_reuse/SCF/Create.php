@@ -11,13 +11,9 @@ class Create
     public function collection($collectionID)
     {
         //TODO: CHECK IF COLLECTIONID EXISTS
-        
         $pathName = $this->main_path.$collectionID;
-        
         // Make Directory | 0777 by default, which means the widest possible access.
         mkdir($pathName,0777);
-        
-        
     }
     
     public function artifact($collectionID)

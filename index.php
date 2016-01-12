@@ -11,9 +11,9 @@ echo "<!DOCTYPE html>
 
         ".$api->addFileForm()."
         ".$api->addFolderForm()."
-        
+        ".$api->addSearchForm()."
 </body>
 </html>";
 
 
-var_dump($api->getFolders());
+//var_dump($api->getFolders());

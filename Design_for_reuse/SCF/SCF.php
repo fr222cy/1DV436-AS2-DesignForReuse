@@ -6,7 +6,7 @@ require_once("Delete.php");
 class SCF
 {
     private $create;
-    //private $read;
+    private $read;
     //private $update;
     //private $remove;
     
@@ -14,7 +14,7 @@ class SCF
     {
         $main_path = "collections/";
         $this->create = new Create($main_path); 
-        //$this->read = new Read(); 
+        $this->read = new Read($main_path); 
         //$this->update = new Update(); 
         //$this->remove = new Delete(); 
     }
@@ -55,10 +55,29 @@ class SCF
         //If there is a file to upload
         if(isset($_POST['fileToUpload']))
         {
-          $this->create->artifact(477);
+          $this->create->artifact(7028);
           echo "File Uploaded";
         }
     }
+    
+    public function searchCollection()
+    {
+        if(isset($_POST['searchCollection']))
+        {
+            if($this->read->isMatch())
+            {
+                echo "Success!";
+            }
+            else
+            {
+                echo "Folder not found.";
+            }
+        }
+    }
+    
+    
+    
+    
     
     public function addFileForm()
     {
@@ -73,12 +92,14 @@ class SCF
                 <input type='submit' value='Create Folder' name='createFolder' id='createFolder'>
             </form>";
     }
-    public function searchForm()
+    public function addSearchForm()
     {
-        echo "<form action='".$this->addFolder()."' method='post' enctype='multipart/form-data'>
-                <input type='submit' value='Create Folder' name='createFolder' id='createFolder'>
+        echo "<form action='".$this->searchCollection()."' method='post' enctype='multipart/form-data'>
+                <input type='input' placeholder='Search Collection by ID' name='searchID' id='searchID'>
+                <input type='submit' value='Search Collection' name='searchCollection' id='searchCollection'>
             </form>";
     }
+    
     
     
     public function getFolders()
