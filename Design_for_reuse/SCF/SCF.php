@@ -55,13 +55,17 @@ class SCF
     
     private function addFile($collectionID)
     {
+        if($_POST['fileToUpload'])
+        {
+            
+            $_SESSION['fileToUpload'] = $_POST['fileToUpload'];
+            
+        }
         
         //If there is a file to upload
-        if(isset($_POST['fileToUpload']))
+        if($collectionID != null && $_SESSION['fileToUpload'])
         {
-          
-          $this->create->artifact($collectionID);
-          echo "File Uploaded";
+            $this->create->artifact($collectionID);
         }
      
     }
@@ -70,10 +74,11 @@ class SCF
     {
         if(isset($_POST['searchCollection']))
         {
+            $this->stopFolderSession();
+            
             if($this->read->isMatch())
             {
                 $this->searchInfo = ["isMatch" => true, "searchID" => $_POST['searchID']];
-               
             }
             else
             {
@@ -83,9 +88,17 @@ class SCF
     }
     
     // Might not use sessions.
-    public function startSession($searchInfo)
+    public function startFolderSession($post)
+    {    
+        if(!isset($_SESSION['searchID']))
+        {
+            $_SESSION['searchID'] = $post;
+        }
+    }
+    
+    public function stopFolderSession()
     {
-        $_SESSION['collectionSession'] = $searchInfo;
+        unset($_SESSION['searchID']);
     }
     
     public function getSearchInfo()
@@ -94,19 +107,34 @@ class SCF
         {
             return $this->searchInfo; 
         }
+        else if (isset($_SESSION['searchID']))
+        {
+            $this->searchInfo = ["isMatch" => true, "searchID" => $_SESSION['searchID']];
+            return $this->searchInfo;
+        }
     }
     
     public function getFolderContent($collectionID)
     {
         if($this->getSearchInfo()['isMatch'] && $this->getSearchInfo()['searchID'] == $collectionID)
         {
-            return $this->read->getFolderContent($collectionID);
+            
+            $itemArray = $this->read->getFolderContent($collectionID);
+            if($itemArray != null)
+            {
+                return $itemArray;
+            }
+            else
+            {
+                return 0;
+            }
         }
         else
         {
             return "Folder is Empty";
         }
     }
+    
     public function addFileForm($collectionID)
     {
         if($collectionID != null)
@@ -122,6 +150,8 @@ class SCF
         
        
     }
+    
+    
     public function addFolderForm()
     {
         echo "<form action='".$this->addFolder()."' method='post' enctype='multipart/form-data'>

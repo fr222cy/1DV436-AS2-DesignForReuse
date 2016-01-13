@@ -2,34 +2,44 @@
 session_start();
 require_once("Design_for_reuse/SCF/SCF.php");
 
-
+var_dump(isset($_SESSION['searchID']));
 $api = new SCF();
 
 $api->startHTMLRender();
-
+    
     $api->addFolderForm();
     $api->addSearchForm();
    
-    if($api->getSearchInfo()['isMatch'])
+    if($api->getSearchInfo()['isMatch'] || isset($_SESSION['searchID']))
     {
         echo "<b>You are in folder: </b>" . $api->getSearchInfo()['searchID'] . "<br>";
         
-        
-        $array =  $api->getFolderContent($api->getSearchInfo()['searchID']);
-        
-        
-        // Used to show values in the array.
-        print_r(array_values($array));
-        
-        $collectionID = $api->getSearchInfo()['searchID'];
+         $api->startFolderSession($_POST['searchID']); 
+         
 
-        // Might not use sessions.
-        //$api->startSession($api->getSearchInfo());
-
-        $api->addFileForm($collectionID);
-
+         $collectionID = $_SESSION['searchID']; 
+        
+     
+        
+         $api->addFileForm($collectionID);
+         $itemArray = $api->getFolderContent($collectionID);
+         var_dump($itemArray);
+        
+        if($itemArray != 0)
+        {
+            foreach ($itemArray as $item) 
+            {
+                echo $item->Name();
+                echo $item->getDownloadButton();
+                echo $item->getDeleteButton();
+                $item->test();
+            }  
+        }
+    
+         
     }
-
+    
+    
 $api->stopHTMLRender();
 
 

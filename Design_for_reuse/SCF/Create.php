@@ -2,6 +2,9 @@
 require_once("Collection.php");
 class Create
 {
+        /*This class is used to upload artifacts 
+        and add collections */
+    
     private $main_path;
     public function __construct($main_path)
     {
@@ -17,18 +20,29 @@ class Create
     
     public function artifact($collectionID)
     {
+        if(isset($_SESSION['fileToUpload']))
+        {
+            $_POST['fileToUpload'] = $_SESSION['fileToUpload'];
+        }
+        
+        
         $target_dir = $this->main_path.$collectionID;
-       
+        
         $target_file = $target_dir ."/". basename($_FILES["fileToUpload"]["name"]);
-        echo $target_file;
+     
+        
+        
         
         if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) 
         {
             echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+            unset($_SESSION['fileToUpload']);
         } else
         {
             echo "Sorry, there was an error uploading your file.";
+      
         }
+     
     }
     
 
