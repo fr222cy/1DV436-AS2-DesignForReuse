@@ -40,39 +40,32 @@ class Artifact
         "<input type='button' value='Download'/></a>";
     }
     
+    
+    // public function artifact($myFile)
+    // {
+    //     unlink($myFile);
+        
+    // }
+    
     public function getDeleteButton()
     {
-         $myFile = $this->main_path.$this->collectionID."/".$this->itemName;
+      $myFile = $this->main_path.$this->collectionID."/".$this->itemName;
+      
+       return "<form method='post'>
+         <input 
+         ' name='".$myFile."' id='".$myFile."' action='".Delete.php."' type='submit' value='Delete Now!'>
+       </form> ";
         
         
-    if(isset($_POST['delete']))
-    {
-        unlink($myFile);
-    }
-
         
-      echo "<form method='post'>
-        <input name='delete' type='submit' value='Delete Now!'>
-        </form> ";
         
-  
+        if($_SERVER['REQUEST_METHOD']=='POST')
+   {
+      $this->artifact($myFile);
+   } 
         
-    }
+        
     
-    
-    public function test()
-    {
-        
-        
-        if($_POST['deleteButton'])
-        {
-            unlink($this->main_path.$this->collectionID."/".$this->itemName);
-            echo "Post, deleteButton.";
-        }
-        else
-        {
-            echo "INTE post, deleteButton";
-        }
     }
     
 }

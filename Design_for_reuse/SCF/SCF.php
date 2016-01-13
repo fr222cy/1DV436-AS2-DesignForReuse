@@ -9,16 +9,17 @@ class SCF
     private $read;
     private $searchInfo;
     //private $update;
-    //private $remove;
+    private $remove;
+    private $main_path;
     
     public function __construct()
     {
-        $main_path = "collections/";
-        $this->create = new Create($main_path); 
-        $this->read = new Read($main_path); 
+        $this->main_path = "collections/";
+        $this->create = new Create($this->main_path); 
+        $this->read = new Read($this->main_path); 
         $this->searchInfo = [];
         //$this->update = new Update(); 
-        //$this->remove = new Delete(); 
+        $this->remove = new Delete(); 
         
     }
     // ADD needs to recieve an object.
@@ -112,6 +113,27 @@ class SCF
             $this->searchInfo = ["isMatch" => true, "searchID" => $_SESSION['searchID']];
             return $this->searchInfo;
         }
+    }
+    
+    public function updateCurrentFolder($collectionID)
+    {
+        $itemArray = $this->read->getFolderContent($collectionID);
+        
+        if($itemArray != 0)
+        {
+                
+            foreach ($itemArray as $item) 
+            {
+                $file =  $this->main_path.$item->CollectionID()."/".$item->Name();
+              
+                
+                
+                    $this->remove->artifact($file);
+                
+            }  
+        }
+          
+          
     }
     
     public function getFolderContent($collectionID)
