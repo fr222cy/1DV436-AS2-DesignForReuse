@@ -1,14 +1,16 @@
 <?php
 session_start();
 require_once("Design_for_reuse/SCF/SCF.php");
-
+var_dump($_POST);
 $api = new SCF();
 
 $api->startHTMLRender();
 
     $api->addFolderForm();
     $api->addSearchForm();
-   
+    
+    // Used to check if changes have happened in the current folder.
+    $api->updateCurrentFolder();
     if($api->getSearchInfo()['isMatch'] || isset($_SESSION['searchID']))
     {
         echo "<b>You are in folder: </b>" . $api->getSearchInfo()['searchID'] . "<br>";
@@ -18,8 +20,8 @@ $api->startHTMLRender();
 
         $collectionID = $_SESSION['searchID']; 
         
-        // Used to check if changes have happened in the current folder.
-        $api->updateCurrentFolder($collectionID);
+       
+       
         
         $api->addFileForm($collectionID);
         

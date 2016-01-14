@@ -11,6 +11,7 @@ class SCF
     //private $update;
     private $remove;
     private $main_path;
+    private $lastSession;
     
     public function __construct()
     {
@@ -29,17 +30,18 @@ class SCF
         //Else there is a folder.
         if(isset($_POST['createFolder']))
         {
+            
             //if there is a session, we create a folder in the current folder.
             if(isset($_SESSION['searchID']))
             {
-                
                 $collectionID = $_SESSION['searchID'];
                 
-                
-                
                 $collectionID .= "/".substr(str_shuffle(MD5(microtime())), 0, 10);
+
+                header('Location: ?');
                 
                 $this->create->collection($collectionID);
+                
                 return;
             }
             
@@ -59,6 +61,7 @@ class SCF
 
                 $this->create->collection($collectionID);
                 echo "Folder Created, here is your ID: ".$collectionID. " (You will need it to access the folder)";
+                
 
             }
             catch(Exception $e)
@@ -120,28 +123,36 @@ class SCF
     {
         if(isset($_POST['searchCollection']))
         {
+            
             return $this->searchInfo; 
+            
         }
         else if (isset($_SESSION['searchID']))
         {
-            $this->searchInfo = ["isMatch" => true, "searchID" => $_SESSION['searchID']];
-            return $this->searchInfo;
+ 
+           $this->searchInfo = ["isMatch" => true, "searchID" => $_SESSION['searchID']];
+           
+                
+           return $this->searchInfo;
+            
         }
+        
+        
+        
     }
     
-    public function updateCurrentFolder($collectionID)
+    public function updateCurrentFolder()
     {
         if (isset($_POST["filedelete"]))
         {
             $this->remove->item();
-            //header('Location:?');
-            return;
+            header('Location:?');
         }
         
         if(isset($_POST["openFile"]))
         {
             $_SESSION['searchID'] .= "/" . $_GET['file'];
-            var_dump($_SESSION['searchID']);
+            header('Location:?');
         }
         
     }
