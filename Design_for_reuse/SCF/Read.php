@@ -41,13 +41,13 @@ class Read
          
         foreach($folder as $itemName)    
         {
-        
-       
-        
-        $artifact = new Artifact($collectionID, $itemName, $folderPos, $this->main_path);
             
-        array_push($contentArray, $artifact);
-        $folderPos++;
+           
+            
+            $artifact = new Artifact($collectionID, $itemName, $folderPos, $this->main_path);
+                
+            array_push($contentArray, $artifact);
+            $folderPos++;
         }
         
         //Slice to remove the two "empty files" from scandir.

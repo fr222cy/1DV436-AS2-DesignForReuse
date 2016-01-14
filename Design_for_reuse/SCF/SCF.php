@@ -29,6 +29,20 @@ class SCF
         //Else there is a folder.
         if(isset($_POST['createFolder']))
         {
+            //if there is a session, we create a folder in the current folder.
+            if(isset($_SESSION['searchID']))
+            {
+                
+                $collectionID = $_SESSION['searchID'];
+                
+                
+                
+                $collectionID .= "/".substr(str_shuffle(MD5(microtime())), 0, 10);
+                
+                $this->create->collection($collectionID);
+                return;
+            }
+            
             $collectionID = rand(0,10000);
             
             try
@@ -117,23 +131,19 @@ class SCF
     
     public function updateCurrentFolder($collectionID)
     {
-        $itemArray = $this->read->getFolderContent($collectionID);
-        
-        if($itemArray != 0)
+        if (isset($_POST["filedelete"]))
         {
-                
-            foreach ($itemArray as $item) 
-            {
-                $file =  $this->main_path.$item->CollectionID()."/".$item->Name();
-              
-                
-                
-                    $this->remove->artifact($file);
-                
-            }  
+            $this->remove->item();
+            //header('Location:?');
+            return;
         }
-          
-          
+        
+        if(isset($_POST["openFile"]))
+        {
+            $_SESSION['searchID'] .= "/" . $_GET['file'];
+            var_dump($_SESSION['searchID']);
+        }
+        
     }
     
     public function getFolderContent($collectionID)

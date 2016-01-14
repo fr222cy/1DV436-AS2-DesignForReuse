@@ -7,7 +7,8 @@ class Artifact
     private $collectionID;
     private $itemName;
     private $folderPosition;
-    private $main_path;
+   
+    private $filePath;
     
     public function __construct($collectionID, $itemName , $folderpos, $main_path)
     {
@@ -15,7 +16,7 @@ class Artifact
         $this->collectionID = $collectionID;
         $this->itemName = $itemName;
         $this->folderPosition = $folderpos;
-        $this->main_path = $main_path;
+        $this->filePath = $main_path.$collectionID."/".$itemName;
     }
     
     
@@ -34,37 +35,38 @@ class Artifact
         return $this->folderPosition;
     }
     
-    public function getDownloadButton()
+    public function getActionButton()
     {
-        return "<a href='".$this->main_path.$this->collectionID."/".$this->itemName."' download='".$this->itemName."'>".
-        "<input type='button' value='Download'/></a>";
+        if(strpos($this->itemName, ".") == true)
+        {
+            return "<a href='".$this->filePath."' download='".$this->itemName."'>".
+            "<input type='button' value='Download'/></a>";  
+        }
+        else 
+        {
+            return "<form method='post' action='?file=".$this->itemName."'>
+             <input 
+              name='openFile' type='submit' value='Open'>
+            </form> ";
+            
+        }
+       
     }
-    
-    
-    // public function artifact($myFile)
-    // {
-    //     unlink($myFile);
-        
-    // }
     
     public function getDeleteButton()
     {
-      $myFile = $this->main_path.$this->collectionID."/".$this->itemName;
+        
+     
+        
+        
+        
       
-       return "<form method='post'>
+        return "<form method='post' action='?file=".$this->filePath."'>
          <input 
-         ' name='".$myFile."' id='".$myFile."' action='".Delete.php."' type='submit' value='Delete Now!'>
-       </form> ";
+          name='filedelete' type='submit' value='Delete Now!'>
+        </form> ";
         
-        
-        
-        
-        if($_SERVER['REQUEST_METHOD']=='POST')
-   {
-      $this->artifact($myFile);
-   } 
-        
-        
+    
     
     }
     
