@@ -5,6 +5,8 @@ var_dump($_POST);
 $api = new SCF();
 
 $api->startHTMLRender();
+        
+  
 
     $api->addFolderForm();
     $api->addSearchForm();
@@ -13,14 +15,19 @@ $api->startHTMLRender();
     $api->updateCurrentFolder();
     if($api->getSearchInfo()['isMatch'] || isset($_SESSION['searchID']))
     {
-        echo "<b>You are in folder: </b>" . $api->getSearchInfo()['searchID'] . "<br>";
+        
+        echo "<br><b>You are in folder: </b>" . $api->getSearchInfo()['searchID'] . "<br>";
         
         $api->startFolderSession($_POST['searchID']); 
         
+        if($api->isInChildFolder())
+        {
+            echo $api->getBackButton();
+        }
 
         $collectionID = $_SESSION['searchID']; 
         
-       
+        
        
         
         $api->addFileForm($collectionID);
@@ -39,6 +46,8 @@ $api->startHTMLRender();
                 echo $item->getDeleteButton();
             }  
         }
+        
+        var_dump($_SESSION['searchID']);
     }
     
     

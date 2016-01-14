@@ -11,7 +11,6 @@ class SCF
     //private $update;
     private $remove;
     private $main_path;
-    private $lastSession;
     
     public function __construct()
     {
@@ -27,7 +26,7 @@ class SCF
     
     private function addFolder()
     {
-        //Else there is a folder.
+        // If there is a folder.
         if(isset($_POST['createFolder']))
         {
             
@@ -35,9 +34,10 @@ class SCF
             if(isset($_SESSION['searchID']))
             {
                 $collectionID = $_SESSION['searchID'];
-                
                 $collectionID .= "/".substr(str_shuffle(MD5(microtime())), 0, 10);
 
+                $lastCollectionID = $collectionID;
+                
                 header('Location: ?');
                 
                 $this->create->collection($collectionID);
@@ -143,6 +143,11 @@ class SCF
     
     public function updateCurrentFolder()
     {
+        if(isset($_POST["goBack"]))
+        {
+            $_SESSION['searchID'] = iconv_substr($_SESSION['searchID'], 0, strlen($_SESSION['searchID']) - 11);
+        }
+        
         if (isset($_POST["filedelete"]))
         {
             $this->remove->item();
@@ -176,6 +181,31 @@ class SCF
         {
             return "Folder is Empty";
         }
+    }
+    
+    public function getBackButton()
+    {
+        
+         echo "<form method='post' enctype='multipart/form-data'>
+                <input type='submit' value='<-' name='goBack' id='goBack'>
+            </form>";
+    }
+    
+    // Double check this. Back magically appears.
+    public function isInChildFolder()
+    {
+        if(strpos($_SESSION['searchID'],"/"))
+        {
+            if(strlen($_SESSION['searchID']) <= 4){
+                return false;
+            }
+            
+            return true;
+        }
+        return false;
+        
+        
+       
     }
     
     public function addFileForm($collectionID)
