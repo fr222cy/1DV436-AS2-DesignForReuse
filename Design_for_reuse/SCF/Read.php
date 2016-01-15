@@ -1,12 +1,10 @@
 <?php
-
 require_once("Artifact.php");
-
 class Read
 {
     /*This class is used to download artifacts 
         and list collections */
-        
+       
     private $main_path;
     
     public function __construct($main_path)
@@ -15,36 +13,39 @@ class Read
     }
     
     
-    public function isMatch()
-    {
+    // public function isMatch()
+    // {
         
-        $folders = scandir("collections");
+    //     $folders = scandir("collections");
             
-        foreach($folders as $folderName)    
-        {
-            if($_POST["searchID"] == $folderName)
-            {
-              //findDirectory; 
-            }
-        }
+    //     foreach($folders as $folderName)    
+    //     {
+    //         if($_POST["searchID"] == $folderName)
+    //         {
+    //           //findDirectory; 
+    //         }
+    //     }
         
-        return false;
-    }
+    //     return false;
+    // }
     
     //Returns all the files in the specificed folder(collectionID).
     public function getFolderContent($collectionID)
     {
-        $folder = scandir($this->main_path.$collectionID);
+        $path = $this->findDirectory($collectionID);
+        if ($path == null)
+            throw new Exception("No such collection");
+        $folder = scandir($path);
         $contentArray = array();
         
         $folderPos = -2;
-         
+        
         foreach($folder as $itemName)    
         {
             
            
             
-            $artifact = new Artifact($collectionID, $itemName, $folderPos, $this->main_path);
+            $artifact = new Artifact($collectionID, $itemName, $folderPos, $path);
                 
             array_push($contentArray, $artifact);
             $folderPos++;
@@ -61,61 +62,33 @@ class Read
     }
     
     
-    public static function findDirectory($dirPath) 
+    
+    public function findDirectory($id, $folder = null)
     {
-        if (! is_dir($dirPath)) 
-        {
-            throw new InvalidArgumentException("$dirPath must be a directory");
-        }
-        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') 
-        {
-            $dirPath .= '/';
-        }
-        $folders = glob($dirPath . '*', GLOB_MARK);
-        
+        if ($folder == null)
+            $folder = $this->main_path;
        
-
-        foreach ($folders as $folder) 
+        $content = scandir($folder);
+        
+        for ($i = 2; $i<count($content); $i++)
         {
-            if($dirPath.$_POST['searchID']."/" == $folder)
+            $subfolder = $content[$i];
+            if (basename($subfolder) == $id)
             {
-                return true;
+                return $folder.$subfolder;
             }
-            
-            
-            echo "FOLDER: ". $folder."<br>";
-            $subFiles = scandir($folder);
-            
-            while($subFiles != null)
+            else
             {
-                foreach ($subFiles as $subFile) 
+                if (is_dir($folder.$subfolder))
                 {
-                    echo "Input Search: ".$folder.$_POST['searchID']."<br>";
-                    echo "Server  Search: ". $folder.$subFile."<br>";
-                    if($folder.$_POST['searchID'] == $folder.$subFile)
-                    {
-                        $_POST['searchID'] = substr($folder.$_POST['searchID'], strlen($dirPath . "/") - 1);
-                        return true;
-                    }
-                    else
-                    {
-                    $path = realpath($dirPath.$_POST['searchID']."/");
-                    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename)
-                    {
-                            echo "$filename</br>";
-                    }
-                    }
-                    
-                } 
-                break;
+                    $result = $this->findDirectory($id, $folder.$subfolder."/");
+                    if ($result != null)
+                        return $result;
+                }
             }
-
-           
         }
         
-          
-        
-      return false;
+        return null;
     }
     
 }

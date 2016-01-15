@@ -4,17 +4,25 @@ class Delete
 {
 /*This class is used to remove artifacts from collections
 and delete collections (if the collection contains other collections or artifacts, they are removed aswell). */
-
+    private $read;
+    
+    public function __construct($read)
+    {
+        $this->read = $read;
+    }
     
     public function item()
     {
-        if(strpos($_GET["file"], ".") == true) 
+        
+        $path = $this->read->findDirectory($_SESSION['searchID']) . "/" . $_GET["file"];
+        
+        if(strpos($path, ".") == true) 
         {
-            unlink($_GET["file"]);
+            unlink($path);
         }
         else 
         {
-            $this->deleteDir($_GET["file"]);
+            $this->deleteDir($path);
         }
     }
     

@@ -16,7 +16,7 @@ class Artifact
         $this->collectionID = $collectionID;
         $this->itemName = $itemName;
         $this->folderPosition = $folderpos;
-        $this->filePath = $main_path.$collectionID."/".$itemName;
+        $this->filePath = $main_path;
     }
     
     
@@ -46,7 +46,7 @@ class Artifact
         {
             return "<form method='post' action='?file=".$this->itemName."'>
              <input 
-              name='openFile' type='submit' value='Open'>
+              name='openCollection' type='submit' value='Open'>
             </form> ";
             
         }
@@ -56,7 +56,7 @@ class Artifact
     public function getDeleteButton()
     {
 
-        return "<form method='post' action='?file=".$this->filePath."'>
+        return "<form method='post' action='?file=".$this->itemName."'>
          <input 
           name='filedelete' type='submit' value='Delete Now!'>
         </form> ";

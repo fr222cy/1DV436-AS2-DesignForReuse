@@ -11,15 +11,15 @@ class Create
         $this->main_path = $main_path;
     }
     
-    public function collection($collectionID)
+    public function collection($path)
     {
         
-        $pathName = $this->main_path.$collectionID;
+        $pathName = $path;
         // Make Directory | 0777 by default, which means the widest possible access.
         mkdir($pathName,0777);
     }
     
-    public function artifact($collectionID)
+    public function artifact($path)
     {
         if(isset($_SESSION['fileToUpload']))
         {
@@ -27,9 +27,9 @@ class Create
         }
         
         
-        $target_dir = $this->main_path.$collectionID;
+     
         
-        $target_file = $target_dir ."/". basename($_FILES["fileToUpload"]["name"]);
+        $target_file = $path ."/". basename($_FILES["fileToUpload"]["name"]);
         
         
         if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) 

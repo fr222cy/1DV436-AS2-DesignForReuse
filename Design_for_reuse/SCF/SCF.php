@@ -17,7 +17,7 @@ class SCF
         $this->create = new Create($this->main_path); 
         $this->read = new Read($this->main_path); 
         $this->searchInfo = [];
-        $this->remove = new Delete(); 
+        $this->remove = new Delete($this->read); 
         
     }
     // ADD needs to recieve an object.
@@ -31,15 +31,14 @@ class SCF
             //if there is a session, we create a folder in the current folder.
             if(isset($_SESSION['searchID']))
             {
-                $collectionID = $_SESSION['searchID'];
-                $collectionID .= "/".substr(str_shuffle(MD5(microtime())), 0, 10);
+                $collectionID = substr(str_shuffle(MD5(microtime())), 0, 10);
+                
+                $path = $this->read->findDirectory($_SESSION['searchID']) . "/" . $collectionID;
 
-                $lastCollectionID = $collectionID;
+                
+                $this->create->collection($path);
                 
                 header('Location: ?');
-                
-                $this->create->collection($collectionID);
-                
                 return;
             }
             
@@ -57,7 +56,7 @@ class SCF
                     }
                 }
 
-                $this->create->collection($collectionID);
+                $this->create->collection($this->main_path.$collectionID);
                 echo "Folder Created, here is your ID: ".$collectionID. " (You will need it to access the folder)";
                 
 
@@ -81,7 +80,8 @@ class SCF
         //If there is a file to upload
         if($collectionID != null && $_SESSION['fileToUpload'])
         {
-            $this->create->artifact($collectionID);
+             $path = $this->read->findDirectory($collectionID);
+            $this->create->artifact($path);
         }
      
     }
@@ -92,7 +92,7 @@ class SCF
         {
             $this->stopFolderSession();
             
-            if($this->read->findDirectory($this->main_path))
+            if($this->read->findDirectory($_POST['searchID']) != null)
             {
                 $this->searchInfo = ["isMatch" => true, "searchID" => $_POST['searchID']];
             }
@@ -155,6 +155,12 @@ class SCF
         if(isset($_POST["openFile"]))
         {
             $_SESSION['searchID'] .= "/" . $_GET['file'];
+            header('Location:?');
+        }
+        
+        if (isset($_POST["openCollection"]))
+        {
+            $_SESSION['searchID'] = $_GET['file'];
             header('Location:?');
         }
         
