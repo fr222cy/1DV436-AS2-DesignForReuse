@@ -24,7 +24,7 @@ class Read
         {
             if($_POST["searchID"] == $folderName)
             {
-               return true; 
+              //findDirectory; 
             }
         }
         
@@ -58,6 +58,64 @@ class Read
         return $contentArray;
         
        
+    }
+    
+    
+    public static function findDirectory($dirPath) 
+    {
+        if (! is_dir($dirPath)) 
+        {
+            throw new InvalidArgumentException("$dirPath must be a directory");
+        }
+        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') 
+        {
+            $dirPath .= '/';
+        }
+        $folders = glob($dirPath . '*', GLOB_MARK);
+        
+       
+
+        foreach ($folders as $folder) 
+        {
+            if($dirPath.$_POST['searchID']."/" == $folder)
+            {
+                return true;
+            }
+            
+            
+            echo "FOLDER: ". $folder."<br>";
+            $subFiles = scandir($folder);
+            
+            while($subFiles != null)
+            {
+                foreach ($subFiles as $subFile) 
+                {
+                    echo "Input Search: ".$folder.$_POST['searchID']."<br>";
+                    echo "Server  Search: ". $folder.$subFile."<br>";
+                    if($folder.$_POST['searchID'] == $folder.$subFile)
+                    {
+                        $_POST['searchID'] = substr($folder.$_POST['searchID'], strlen($dirPath . "/") - 1);
+                        return true;
+                    }
+                    else
+                    {
+                    $path = realpath($dirPath.$_POST['searchID']."/");
+                    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename)
+                    {
+                            echo "$filename</br>";
+                    }
+                    }
+                    
+                } 
+                break;
+            }
+
+           
+        }
+        
+          
+        
+      return false;
     }
     
 }

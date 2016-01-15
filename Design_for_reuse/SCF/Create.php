@@ -1,5 +1,5 @@
 <?php
-require_once("Collection.php");
+
 class Create
 {
         /*This class is used to upload artifacts 

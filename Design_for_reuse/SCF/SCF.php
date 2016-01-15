@@ -1,14 +1,13 @@
 <?php
 require_once("Create.php");
 require_once("Read.php");
-require_once("Update.php");
+
 require_once("Delete.php");
 class SCF
 {
     private $create;
     private $read;
     private $searchInfo;
-    //private $update;
     private $remove;
     private $main_path;
     
@@ -18,7 +17,6 @@ class SCF
         $this->create = new Create($this->main_path); 
         $this->read = new Read($this->main_path); 
         $this->searchInfo = [];
-        //$this->update = new Update(); 
         $this->remove = new Delete(); 
         
     }
@@ -94,7 +92,7 @@ class SCF
         {
             $this->stopFolderSession();
             
-            if($this->read->isMatch())
+            if($this->read->findDirectory($this->main_path))
             {
                 $this->searchInfo = ["isMatch" => true, "searchID" => $_POST['searchID']];
             }

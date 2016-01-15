@@ -6,7 +6,6 @@ class Delete
 and delete collections (if the collection contains other collections or artifacts, they are removed aswell). */
 
     
-    
     public function item()
     {
         if(strpos($_GET["file"], ".") == true) 

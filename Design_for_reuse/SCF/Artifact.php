@@ -55,12 +55,7 @@ class Artifact
     
     public function getDeleteButton()
     {
-        
-     
-        
-        
-        
-      
+
         return "<form method='post' action='?file=".$this->filePath."'>
          <input 
           name='filedelete' type='submit' value='Delete Now!'>
