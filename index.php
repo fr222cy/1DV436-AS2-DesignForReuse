@@ -24,22 +24,11 @@ $api->startHTMLRender();
         }
 
         $collectionID = $_SESSION['searchID']; 
-        // try
-        // {
+     
             $api->addFileForm($collectionID);
-        // }
-        // catch(Exception $e)
-        // {
-        //     echo "addFile needs a collectionID";
-        // }
-        // try
-        // {
+     
             $itemArray = $api->getFolderContent($collectionID);
-        // }
-        // catch(Exception $e)
-        // {
-        //     echo "Folder is empty!";
-        // }
+   
       
         if($itemArray != 0)
         {
@@ -53,7 +42,7 @@ $api->startHTMLRender();
             }  
         }
         
-        var_dump($_SESSION['searchID']);
+      
     }
     
     
